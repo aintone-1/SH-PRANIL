@@ -1,0 +1,363 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    background: transparent;
+}
+
+/* Background Video */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    z-index: -2;
+    filter: blur(2px) brightness(0.7);
+    /* Ensure smooth playback */
+    will-change: transform;
+    backface-visibility: hidden;
+    /* Remove any margins/padding */
+    margin: 0;
+    padding: 0;
+}
+
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -5;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 1;
+}
+
+/* Logo */
+.logo {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    font-size: 2rem;
+    color: #ff4444;
+    z-index: 10;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Profile Section */
+.profile-section {
+    text-align: center;
+}
+
+.username {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff4444;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    padding: 15px 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 15px;
+    min-width: 300px;
+}
+
+.avatar {
+    position: relative;
+}
+
+.avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #4CAF50;
+}
+
+.profile-info {
+    flex: 1;
+    text-align: left;
+}
+
+.username-small {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+.social-icon.discord {
+    background: #5865F2;
+    color: white;
+}
+
+.social-icon.spotify {
+    background: #1DB954;
+    color: white;
+}
+
+.social-icon.instagram {
+    background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+    color: white;
+}
+
+.social-icon.online {
+    background: #4CAF50;
+    width: 12px;
+    height: 12px;
+}
+
+/* Media Controls */
+.media-controls {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    border: 2px solid transparent;
+}
+
+.control-btn:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.record-btn {
+    background: #ff4444;
+    color: white;
+}
+
+.play-btn {
+    background: #1DB954;
+    color: white;
+}
+
+.discord-btn {
+    background: #5865F2;
+    color: white;
+}
+
+.folder-btn {
+    background: #666;
+    color: white;
+}
+
+.twitch-btn {
+    background: #9146FF;
+    color: white;
+}
+
+/* Stats */
+.stats {
+    margin-top: 20px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    color: #ff4444;
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+}
+
+#stat-number {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Video Controls (Hidden by default) */
+.video-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.video-controls:hover {
+    opacity: 1;
+}
+
+.video-controls button {
+    background: rgba(0, 0, 0, 0.8);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.video-controls button:hover {
+    background: rgba(255, 68, 68, 0.8);
+    transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .username {
+        font-size: 2rem;
+    }
+    
+    .profile-card {
+        min-width: 280px;
+        padding: 12px 20px;
+    }
+    
+    .media-controls {
+        gap: 15px;
+    }
+    
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .logo {
+        top: 20px;
+        left: 20px;
+        font-size: 1.5rem;
+    }
+}
+
+/* Animations */
+.main-content {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.control-btn {
+    animation: fadeInUp 1s ease-out;
+    animation-delay: 0.3s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.control-btn:nth-child(2) { animation-delay: 0.4s; }
+.control-btn:nth-child(3) { animation-delay: 0.5s; }
+.control-btn:nth-child(4) { animation-delay: 0.6s; }
+.control-btn:nth-child(5) { animation-delay: 0.7s; }
+
+/* Custom scrollbar (if needed) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 68, 68, 0.8);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 68, 68, 1);
+}

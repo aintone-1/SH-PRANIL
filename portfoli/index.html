@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CN ONE - Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Video-specific styles */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            object-position: center;
+            z-index: -10;
+            filter: blur(1px) brightness(0.5) contrast(1.2);
+            opacity: 1;
+            display: block;
+        }
+        
+        /* Click to play overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            cursor: pointer;
+            transition: opacity 0.5s;
+        }
+        
+        .video-overlay.hidden {
+            display: none;
+        }
+        
+        .play-button {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .play-button i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: #ff4444;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+        
+        .play-button p {
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        
+        .play-button .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+        
+        /* Video status indicator */
+        .video-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="videoOverlay">
+        <div class="play-button">
+            <i class="fas fa-play-circle"></i>
+            <p>Click to Start Video Experience</p>
+            <p class="subtitle">CN ONE Profile with Background Video</p>
+        </div>
+    </div>
+    
+    <!-- Video Status -->
+    <div class="video-status" id="videoStatus">🎥 Video: Ready to play</div>
+
+    <!-- Background Video (muted, for visual only) -->
+    <video id="bg-video" muted loop playsinline preload="metadata" autoplay>
+        <source src="background-video-web.mp4" type="video/mp4">
+        <source src="background-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Top Left Logo -->
+        <div class="logo">
+            <i class="fas fa-gamepad"></i>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <h1 class="username">CN ONE</h1>
+                
+                <div class="profile-card">
+                    <div class="avatar">
+                        <img src="profile-picture.jpg" alt="CN ONE Profile" id="profile-img" onerror="this.src='https://via.placeholder.com/80x80/4CAF50/ffffff?text=CN'">
+                    </div>
+                    <div class="profile-info">
+                        <div class="username-small">CN ONE</div>
+                        <div class="status">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">Playing</span>
+                        </div>
+                    </div>
+                    <div class="social-icons">
+                        <span class="social-icon discord"><i class="fab fa-discord"></i></span>
+                        <span class="social-icon spotify"><i class="fab fa-spotify"></i></span>
+                        <span class="social-icon instagram"><i class="fab fa-instagram"></i></span>
+                        <span class="social-icon online"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Controls -->
+            <div class="media-controls">
+                <div class="control-btn record-btn">
+                    <i class="fas fa-circle"></i>
+                </div>
+                <div class="control-btn play-btn" id="play-audio">
+                    <i class="fab fa-spotify"></i>
+                </div>
+                <div class="control-btn discord-btn">
+                    <i class="fab fa-discord"></i>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-heart"></i>
+                    <span id="stat-number">278</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Player -->
+    <audio id="background-audio" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Background Video Controls -->
+    <div class="video-controls">
+        <button id="toggle-video" title="Toggle Video"><i class="fas fa-video"></i></button>
+        <button id="toggle-audio" title="Toggle Music"><i class="fas fa-music"></i></button>
+    </div>
+
+    <script>
+        const video = document.getElementById('bg-video');
+        const videoOverlay = document.getElementById('videoOverlay');
+        const videoStatus = document.getElementById('videoStatus');
+        let videoStarted = false;
+
+        // Update video status
+        function updateVideoStatus(message) {
+            videoStatus.textContent = `🎥 ${message}`;
+        }
+
+        // Video event listeners
+        video.addEventListener('loadstart', () => updateVideoStatus('Loading video...'));
+        video.addEventListener('canplay', () => updateVideoStatus('Video ready to play'));
+        video.addEventListener('playing', () => {
+            updateVideoStatus('Video playing');
+            setTimeout(() => videoStatus.style.opacity = '0', 3000);
+        });
+        video.addEventListener('pause', () => updateVideoStatus('Video paused'));
+        video.addEventListener('error', (e) => {
+            console.error('Video error:', e);
+            updateVideoStatus('Video error - check file');
+        });
+
+        // Click to play video and auto-start audio
+        videoOverlay.addEventListener('click', async function() {
+            try {
+                updateVideoStatus('Starting video & audio...');
+                
+                // Start video
+                await video.play();
+                
+                // Auto-start audio
+                const backgroundAudio = document.getElementById('background-audio');
+                if (backgroundAudio) {
+                    try {
+                        await backgroundAudio.play();
+                        updateVideoStatus('Video & Audio playing!');
+                        
+                        // Update Spotify button to show playing state
+                        const audioBtn = document.getElementById('play-audio');
+                        if (audioBtn) {
+                            audioBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            audioBtn.style.background = '#ff4444';
+                        }
+                    } catch (audioError) {
+                        console.log('Audio autoplay failed:', audioError);
+                        updateVideoStatus('Video playing - click green Spotify button for audio');
+                        
+                        // Make sure Spotify button is clickable
+                        const audioBtn = document.getElementById('play-audio');
+                        if (audioBtn) {
+                            audioBtn.style.opacity = '1';
+                            audioBtn.style.cursor = 'pointer';
+                        }
+                    }
+                }
+                
+                videoOverlay.classList.add('hidden');
+                videoStarted = true;
+                
+            } catch (error) {
+                console.error('Failed to play video:', error);
+                updateVideoStatus('Video failed - audio still available');
+                
+                // Hide overlay and enable audio anyway
+                setTimeout(() => {
+                    videoOverlay.classList.add('hidden');
+                }, 2000);
+            }
+        });
+
+        // Auto-hide video status after video starts
+        video.addEventListener('timeupdate', () => {
+            if (video.currentTime > 2) {
+                videoStatus.style.opacity = '0.3';
+            }
+        });
+
+        // Try to load video metadata
+        video.load();
+        
+        // Try to auto-start everything after a short delay
+        setTimeout(() => {
+            if (!videoStarted) {
+                // Try auto-play (might work on some browsers/repeat visits)
+                video.play().then(async () => {
+                    console.log('Auto-play successful!');
+                    videoOverlay.classList.add('hidden');
+                    updateVideoStatus('Auto-started! Audio loading...');
+                    
+                    // Try to auto-start audio too
+                    const backgroundAudio = document.getElementById('background-audio');
+                    if (backgroundAudio) {
+                        try {
+                            await backgroundAudio.play();
+                            updateVideoStatus('Video & Audio auto-playing!');
+                            const audioBtn = document.getElementById('play-audio');
+                            if (audioBtn) {
+                                audioBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                                audioBtn.style.background = '#ff4444';
+                            }
+                        } catch (e) {
+                            updateVideoStatus('Video auto-playing - click for audio');
+                        }
+                    }
+                    
+                    videoStarted = true;
+                }).catch(() => {
+                    console.log('Auto-play blocked - user interaction required');
+                    updateVideoStatus('Click to start video & audio');
+                });
+            }
+        }, 1500);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
